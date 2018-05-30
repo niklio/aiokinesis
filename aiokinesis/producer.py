@@ -69,4 +69,3 @@ class AIOKinesisProducer:
         self._sender_task.cancel()
         if len(self._outstanding_tasks):
             await asyncio.wait(self._outstanding_tasks, loop=self._loop)
-        # self._loop.stop()
