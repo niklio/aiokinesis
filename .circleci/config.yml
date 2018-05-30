@@ -27,7 +27,7 @@ jobs:
           command: python setup.py install
       - run:
           name: Test
-          command: pytest -x
+          command: pytest -x --tb=native
 
 workflows:
   version: 2
