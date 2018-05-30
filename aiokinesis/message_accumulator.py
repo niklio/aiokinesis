@@ -35,14 +35,15 @@ class MessageAccumulator:
     @rate_limit_per_rolling_second(5)
     async def __anext__(self):
         # Await message future
-        await self._await_message_future()
+        if len(self._accumulated_messages) == 0:
+            await self._await_message_future()
 
         # Yield next record
         message = self._accumulated_messages.pop()
         return message
 
-    def add_message(self, partition_key, message):
-        new_message = Message(partition_key, message)
+    def add_message(self, partition_key, value):
+        new_message = Message(partition_key, value)
         self._accumulated_messages.appendleft(new_message)
 
         if not self._message_future.done():
