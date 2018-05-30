@@ -14,7 +14,7 @@ from aiokinesis import AIOKinesisConsumer
     ('test2', 'us-west-1'),
     ('test3', 'us-central-2'),
 ])
-async def test_consumer_iter(stream_name, region_name):
+async def test_consumer_start(stream_name, region_name):
     with patch('boto3.client') as mock_boto3_client:
         # Setup mock
         mock_kinesis_client = MagicMock()

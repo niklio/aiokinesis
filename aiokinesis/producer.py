@@ -18,6 +18,7 @@ class AIOKinesisProducer:
         self._loop = loop
 
         self._message_accumulator = MessageAccumulator(loop)
+        self._outstanding_tasks = set()
 
     async def start(self):
         # Instantiate kinesis client
@@ -35,12 +36,11 @@ class AIOKinesisProducer:
     async def _send_produce_request(self, partition_key, message):
         self._kinesis_client.put_record(
             StreamName=self._stream_name,
-            Data=json.dumps(message),
+            Data=message,
             PartitionKey=partition_key
         )
 
     async def _sender_routine(self):
-        outstanding_tasks = set()
         async for message in self._message_accumulator:
             _produce_request_future = self._send_produce_request(
                 message.partition_key,
@@ -50,11 +50,11 @@ class AIOKinesisProducer:
                 _produce_request_future,
                 loop=self._loop
             )
-            outstanding_tasks.add(task)
+            self._outstanding_tasks.add(task)
 
-        if outstanding_tasks:
+        if self._outstanding_tasks:
             finished_tasks, _ = await asyncio.wait(
-                outstanding_tasks,
+                self._outstanding_tasks,
                 return_when=asyncio.FIRST_COMPLETED,
                 loop=self._loop
             )
@@ -62,13 +62,19 @@ class AIOKinesisProducer:
             for task in finished_tasks:
                 task.result()
 
-            outstanding_tasks -= finished_tasks
+            self._outstanding_tasks -= finished_tasks
 
-    async def send(self, partition_key, message):
+    async def send(self, partition_key, value):
         self._message_accumulator.add_message(
             partition_key,
-            json.dumps(message)
+            json.dumps(value)
         )
 
     async def stop(self):
+        self._sender_task.cancel()
+        if len(self._outstanding_tasks):
+            self._loop.run_until_complete(
+                asyncio.wait(self._outstanding_tasks)
+            )
+
         self._loop.stop()
