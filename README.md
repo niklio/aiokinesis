@@ -24,7 +24,7 @@ Usage:
 ```
 Limitations:
    - Stopping the producer before all messages are sent will prevent in flight messages from being sent
-   - AIOKinesis currently supports one shard so the producer is rate limited to 5 requests per rolling second
+   - AIOKinesis only supports one shard so the producer is rate limited to 5 requests per rolling second
 
 AIOKinesisConsumer
 ------------------
@@ -47,4 +47,4 @@ Usage:
  loop.run_until_complete()
 ```
 Limitations:
-   - AIOKinesis currently supports one shard so the consumer is rate limited to 5 requests per rolling second
+   - AIOKinesis only supports one shard so the consumer is rate limited to 5 requests per rolling second
