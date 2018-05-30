@@ -1,24 +1,26 @@
 AIOKinesis
 ==========
 
+Asyncio client library for AWS Kinesis
+
 AIOKinesisProducer
 ******************
 Usage:
 ```python
-    import asycio
-    from aiokinesis import AIOKinesisProducer
+ import asycio
+ from aiokinesis import AIOKinesisProducer
 
-    async def send_message():
-        loop = asyncio.get_event_loop()
-        producer = AIOKinesisProducer('my-stream-name', loop, region_name='us-east-1')
-        await producer.start()
+ async def send_message():
+     loop = asyncio.get_event_loop()
+     producer = AIOKinesisProducer('my-stream-name', loop, region_name='us-east-1')
+     await producer.start()
 
-        producer.send('partition-key', {'data': 'blah'})
+     producer.send('partition-key', {'data': 'blah'})
 
-        await asyncio.sleep(1)
-        await producer.stop()
+     await asyncio.sleep(1)
+     await producer.stop()
 
-    loop.run_until_complete(send_message())
+ loop.run_until_complete(send_message())
 ```
 
 Limitations:
@@ -29,19 +31,19 @@ AIOKinesisConsumer
 ******************
 Usage:
 ```python
-    import asyncio
-    from aiokinesis import AIOKinesisConsumer
+ import asyncio
+ from aiokinesis import AIOKinesisConsumer
 
-    async def get_messages():
-        loop = asyncio.get_event_loop()
-        consumer = AIOKinesisConsumer('my-stream-name', loop, region_name='us-east-1')
-        await consumer.start()
+ async def get_messages():
+     loop = asyncio.get_event_loop()
+     consumer = AIOKinesisConsumer('my-stream-name', loop, region_name='us-east-1')
+     await consumer.start()
 
-        try:
-            async for message in consumer:
-                print("Consumed message: ", message)
-        except KeyboardInterrupt:
-                await consumer.stop()
+     try:
+         async for message in consumer:
+             print("Consumed message: ", message)
+     except KeyboardInterrupt:
+             await consumer.stop()
 
-    loop.run_until_complete()
+ loop.run_until_complete()
 ```
