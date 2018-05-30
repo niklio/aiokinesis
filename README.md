@@ -4,7 +4,7 @@ AIOKinesis
 Asyncio client library for AWS Kinesis
 
 AIOKinesisProducer
-******************
+------------------
 Usage:
 ```python
  import asycio
@@ -22,13 +22,12 @@ Usage:
 
  loop.run_until_complete(send_message())
 ```
-
 Limitations:
    - Stopping the producer before all messages are sent will prevent in flight messages from being sent
-   - AIOKinesis currently supports only one shard so the producer is rate limited to 5 requests per rolling second
+   - AIOKinesis currently supports one shard so the producer is rate limited to 5 requests per rolling second
 
 AIOKinesisConsumer
-******************
+------------------
 Usage:
 ```python
  import asyncio
@@ -47,3 +46,5 @@ Usage:
 
  loop.run_until_complete()
 ```
+Limitations:
+   - AIOKinesis currently supports one shard so the consumer is rate limited to 5 requests per rolling second
