@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Install Flake8
+          command: pip install flake8
+      - run:
+          name: Lint
+          command: flake8
+
+  test:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Install Dev Dependencies
+          command: pip install -r requirements/development.txt
+      - run:
+          name: Test
+          command: pytest -x
+
+workflows:
+  version: 2
+  lint_and_test:
+    - lint
+    - test
+
