@@ -6,6 +6,7 @@ import pytest
 from aiokinesis.message_accumulator import Message, MessageAccumulator
 
 
+@pytest.mark.asyncio
 @pytest.mark.parametrize('partition_key, value', [
     (1, {'test': 'blah'}),
     (2, {'asdbaisdba': 'oasnfoaibsfa', 'abc': [1, 2, 3]}),
@@ -13,7 +14,7 @@ from aiokinesis.message_accumulator import Message, MessageAccumulator
     (1, {}),
     ('abceadsasdfnoaisdnfoasindfaos', []),
 ])
-def test_add_message(partition_key, value):
+async def test_add_message(partition_key, value):
     # Create message accumulator
     loop = asyncio.get_event_loop()
     accumulator = MessageAccumulator(loop)
