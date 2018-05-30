@@ -4,8 +4,7 @@ AIOKinesis
 AIOKinesisProducer
 ******************
 Usage:
-.. code-block:: python
-
+```python
     import asycio
     from aiokinesis import AIOKinesisProducer
 
@@ -20,6 +19,7 @@ Usage:
         await producer.stop()
 
     loop.run_until_complete(send_message())
+```
 
 Limitations:
    - Stopping the producer before all messages are sent will prevent in flight messages from being sent
@@ -28,8 +28,7 @@ Limitations:
 AIOKinesisConsumer
 ******************
 Usage:
-.. code-block:: python
-
+```python
     import asyncio
     from aiokinesis import AIOKinesisConsumer
 
@@ -45,3 +44,4 @@ Usage:
                 await consumer.stop()
 
     loop.run_until_complete()
+```
