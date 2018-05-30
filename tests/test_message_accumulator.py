@@ -138,4 +138,4 @@ async def test_rate_limit():
         prev_i = i - yields_per_rolling_sec
         prev_yield_time = message_yield_times[prev_i]
         assert yield_time - prev_yield_time > 1
-        assert yield_time - prev_yield_time < 1.1
+        assert yield_time - prev_yield_time < 1.5

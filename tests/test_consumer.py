@@ -123,4 +123,4 @@ async def test_consumer_rate_limit():
             prev_i = i - requests_per_rolling_sec
             prev_request_time = records_request_times[prev_i]
             assert request_time - prev_request_time > 1
-            assert request_time - prev_request_time < 1.1
+            assert request_time - prev_request_time < 1.5

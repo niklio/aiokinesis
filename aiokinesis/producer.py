@@ -1,6 +1,7 @@
 import asyncio
 from asyncio import ensure_future
 import json
+from functools import partial
 
 import boto3
 
@@ -40,6 +41,9 @@ class AIOKinesisProducer:
             PartitionKey=partition_key
         )
 
+    async def _complete_produce_request(self, task):
+        self._outstanding_tasks.remove(task)
+
     async def _sender_routine(self):
         async for message in self._message_accumulator:
             _produce_request_future = self._send_produce_request(
@@ -50,19 +54,8 @@ class AIOKinesisProducer:
                 _produce_request_future,
                 loop=self._loop
             )
+            task.add_done_callback(partial(self._complete_produce_request, task))
             self._outstanding_tasks.add(task)
-
-        if self._outstanding_tasks:
-            finished_tasks, _ = await asyncio.wait(
-                self._outstanding_tasks,
-                return_when=asyncio.FIRST_COMPLETED,
-                loop=self._loop
-            )
-
-            for task in finished_tasks:
-                task.result()
-
-            self._outstanding_tasks -= finished_tasks
 
     async def send(self, partition_key, value):
         self._message_accumulator.add_message(
@@ -73,8 +66,5 @@ class AIOKinesisProducer:
     async def stop(self):
         self._sender_task.cancel()
         if len(self._outstanding_tasks):
-            self._loop.run_until_complete(
-                asyncio.wait(self._outstanding_tasks)
-            )
-
-        self._loop.stop()
+            await asyncio.wait(self._outstanding_tasks, loop=self._loop)
+        # self._loop.stop()

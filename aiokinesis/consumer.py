@@ -53,4 +53,4 @@ class AIOKinesisConsumer:
         return response
 
     async def stop(self):
-        self._loop.stop()
+        pass
