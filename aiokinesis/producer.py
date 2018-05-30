@@ -54,7 +54,9 @@ class AIOKinesisProducer:
                 _produce_request_future,
                 loop=self._loop
             )
-            task.add_done_callback(partial(self._complete_produce_request, task))
+            task.add_done_callback(
+                partial(self._complete_produce_request, task)
+            )
             self._outstanding_tasks.add(task)
 
     async def send(self, partition_key, value):
