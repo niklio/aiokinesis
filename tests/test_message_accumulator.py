@@ -92,7 +92,6 @@ async def test_anext_multiple_messages(partition_key, value):
 
 
 @pytest.mark.asyncio
-@pytest.mark.xfail(raises=asyncio.TimeoutError)
 async def test_anext_empty():
     # Create message accumulator
     loop = asyncio.get_event_loop()
@@ -100,7 +99,11 @@ async def test_anext_empty():
 
     # Try to consume message
     anext_future = accumulator.__anext__()
-    await asyncio.wait_for(anext_future, timeout=1)
+    try:
+        await asyncio.wait_for(anext_future, timeout=1)
+        assert False
+    except asyncio.TimeoutError:
+        pass
 
 
 @pytest.mark.asyncio
