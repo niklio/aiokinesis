@@ -21,7 +21,7 @@ Usage:
      producer = AIOKinesisProducer('my-stream-name', loop, region_name='us-east-1')
      await producer.start()
 
-     producer.send('partition-key', {'data': 'blah'})
+     await producer.send('partition-key', {'data': 'blah'})
 
      await asyncio.sleep(1)
      await producer.stop()
