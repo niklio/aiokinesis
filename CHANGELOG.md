@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## Unreleased
 
+---
+
+## 0.0.3
+
 ### Changed
 
 - callback methods should not be async
