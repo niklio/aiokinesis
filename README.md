@@ -3,6 +3,12 @@ AIOKinesis
 
 Asyncio client library for AWS Kinesis
 
+Installation
+------------
+```
+pip install aiokinesis
+```
+
 AIOKinesisProducer
 ------------------
 Usage:
