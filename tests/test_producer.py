@@ -64,6 +64,7 @@ async def test_producer_add_message(stream_name, partition_key, value):
             partition_key,
             json.dumps(value),
         )
+        await producer.stop()
 
 
 @pytest.mark.asyncio
@@ -101,6 +102,7 @@ async def test_producer_send_message(stream_name, partition_key, value):
             Data=json.dumps(value),
             PartitionKey=partition_key
         )
+        await producer.stop()
 
 
 @pytest.mark.asyncio
@@ -121,3 +123,4 @@ async def test_producer_send_message_done_callback(mocker):
     await asyncio.sleep(0.1)
 
     producer._complete_produce_request.assert_called_once()
+    await producer.stop()
