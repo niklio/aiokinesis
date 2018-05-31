@@ -101,3 +101,23 @@ async def test_producer_send_message(stream_name, partition_key, value):
             Data=json.dumps(value),
             PartitionKey=partition_key
         )
+
+
+@pytest.mark.asyncio
+async def test_producer_send_message_done_callback(mocker):
+    mocker.patch('boto3.client')
+    loop = asyncio.get_event_loop()
+    producer = AIOKinesisProducer(
+        'test1',
+        loop,
+    )
+    mocker.spy(producer, '_complete_produce_request')
+
+    # Start producer
+    await producer.start()
+    # Send stuff
+    await producer.send(1, {'key': 'value'})
+    # Wait for the sender routine
+    await asyncio.sleep(0.1)
+
+    producer._complete_produce_request.assert_called_once()
