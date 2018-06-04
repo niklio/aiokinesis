@@ -15,7 +15,7 @@ from aiokinesis import AIOKinesisConsumer
     ('test1', 'us-east-1', 'LATEST', None, None),
     ('test2', 'us-west-1', 'AFTER_SEQUENCE_NUMBER', '123', None),
     ('test3', 'us-central-2', 'AT_SEQUENCE_NUMBER', '456', None),
-    ('test3', 'us-central-2', 'AT_TIMESTAMP', None, datetime.now()),
+    ('test3', 'us-central-2', 'AT_TIMESTAMP', None, datetime.min),
 ])
 async def test_consumer_start(stream_name, region_name, shard_iterator_type,
                               starting_sequence_number, timestamp):

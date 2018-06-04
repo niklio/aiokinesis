@@ -119,6 +119,7 @@ async def test_producer_send_message_done_callback(mocker):
     await producer.start()
     # Send stuff
     await producer.send(1, {'key': 'value'})
+
     # Wait for the sender routine
     await asyncio.sleep(0.1)
 
