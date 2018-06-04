@@ -9,10 +9,17 @@ class AIOKinesisConsumer:
     Async client to consume from a kinesis topic
     """
 
-    def __init__(self, stream_name, loop, region_name='us-east-1'):
+    def __init__(self, stream_name, loop, region_name='us-east-1',
+                 shard_iterator_type='LATEST', starting_sequence_number=None,
+                 timestamp=None):
+
         self._stream_name = stream_name
         self._region_name = region_name
         self._loop = loop
+
+        self._shard_iterator_type = shard_iterator_type
+        self._starting_sequence_number = starting_sequence_number
+        self._timestamp = timestamp
 
     async def start(self):
         # Instantiate kinesis client
@@ -31,7 +38,9 @@ class AIOKinesisConsumer:
         shard_iterator = self._kinesis_client.get_shard_iterator(
             StreamName=self._stream_name,
             ShardId=shard_id,
-            ShardIteratorType='LATEST'
+            ShardIteratorType=self._shard_iterator_type,
+            StartingSequenceNumber=self._starting_sequence_number,
+            Timestamp=self._timestamp
         )
         self._next_shard_iterator = shard_iterator['ShardIterator']
 

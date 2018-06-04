@@ -1,6 +1,7 @@
 import asyncio
 from time import time
 from uuid import uuid4
+from datetime import datetime
 
 from mock import MagicMock, patch
 import pytest
@@ -9,12 +10,15 @@ from aiokinesis import AIOKinesisConsumer
 
 
 @pytest.mark.asyncio
-@pytest.mark.parametrize('stream_name, region_name', [
-    ('test1', 'us-east-1'),
-    ('test2', 'us-west-1'),
-    ('test3', 'us-central-2'),
+@pytest.mark.parametrize('stream_name, region_name, shard_iterator_type, \
+        starting_sequence_number, timestamp', [
+    ('test1', 'us-east-1', 'LATEST', None, None),
+    ('test2', 'us-west-1', 'AFTER_SEQUENCE_NUMBER', '123', None),
+    ('test3', 'us-central-2', 'AT_SEQUENCE_NUMBER', '456', None),
+    ('test3', 'us-central-2', 'AT_TIMESTAMP', None, datetime.min),
 ])
-async def test_consumer_start(stream_name, region_name):
+async def test_consumer_start(stream_name, region_name, shard_iterator_type,
+                              starting_sequence_number, timestamp):
     with patch('boto3.client') as mock_boto3_client:
         # Setup mock
         mock_kinesis_client = MagicMock()
@@ -25,7 +29,10 @@ async def test_consumer_start(stream_name, region_name):
         consumer = AIOKinesisConsumer(
             stream_name,
             loop,
-            region_name=region_name
+            region_name=region_name,
+            shard_iterator_type=shard_iterator_type,
+            starting_sequence_number=starting_sequence_number,
+            timestamp=timestamp
         )
 
         # Starting consumer should create a kinesis consumer exactly once.
@@ -40,7 +47,14 @@ async def test_consumer_start(stream_name, region_name):
         mock_kinesis_client.describe_stream.assert_called_once_with(
             StreamName=stream_name
         )
-        mock_kinesis_client.get_shard_iterator.assert_called()
+        call_kwargs = mock_kinesis_client\
+            .get_shard_iterator.call_args_list[0][1]
+        assert call_kwargs['StreamName'] == stream_name
+        assert 'ShardId' in call_kwargs
+        assert call_kwargs['ShardIteratorType'] == shard_iterator_type
+        assert call_kwargs['StartingSequenceNumber'] == \
+            starting_sequence_number
+        assert call_kwargs['Timestamp'] == timestamp
 
 
 @pytest.mark.asyncio

@@ -1,7 +1,6 @@
 import asyncio
 from asyncio import ensure_future
 import json
-from functools import partial
 
 import boto3
 
@@ -54,9 +53,7 @@ class AIOKinesisProducer:
                 _produce_request_future,
                 loop=self._loop
             )
-            task.add_done_callback(
-                partial(self._complete_produce_request)
-            )
+            task.add_done_callback(self._complete_produce_request)
             self._outstanding_tasks.add(task)
 
     async def send(self, partition_key, value):
