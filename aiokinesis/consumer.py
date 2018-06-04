@@ -35,12 +35,18 @@ class AIOKinesisConsumer:
         shard_id = kinesis_stream['StreamDescription']['Shards'][0]['ShardId']
 
         # Create a shard iterator
+        shard_iterator_kwargs = {
+            'StreamName': self._stream_name,
+            'ShardId': shard_id,
+            'ShardIteratorType': self._shard_iterator_type
+        }
+        if self._starting_sequence_number is not None:
+            shard_iterator_kwargs['StartingSequenceNumber'] =\
+                self._starting_sequence_number
+        if self._timestamp is not None:
+            shard_iterator_kwargs['Timestamp'] = self._timestamp
         shard_iterator = self._kinesis_client.get_shard_iterator(
-            StreamName=self._stream_name,
-            ShardId=shard_id,
-            ShardIteratorType=self._shard_iterator_type,
-            StartingSequenceNumber=self._starting_sequence_number,
-            Timestamp=self._timestamp
+            **shard_iterator_kwargs
         )
         self._next_shard_iterator = shard_iterator['ShardIterator']
 
