@@ -41,7 +41,7 @@ class AIOKinesisProducer:
             PartitionKey=partition_key
         )
 
-    async def _complete_produce_request(self, task):
+    def _complete_produce_request(self, task):
         self._outstanding_tasks.remove(task)
 
     async def _sender_routine(self):
@@ -55,7 +55,7 @@ class AIOKinesisProducer:
                 loop=self._loop
             )
             task.add_done_callback(
-                partial(self._complete_produce_request, task)
+                partial(self._complete_produce_request)
             )
             self._outstanding_tasks.add(task)
 
