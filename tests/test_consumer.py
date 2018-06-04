@@ -52,9 +52,9 @@ async def test_consumer_start(stream_name, region_name, shard_iterator_type,
         assert call_kwargs['StreamName'] == stream_name
         assert 'ShardId' in call_kwargs
         assert call_kwargs['ShardIteratorType'] == shard_iterator_type
-        assert call_kwargs['StartingSequenceNumber'] == \
+        assert call_kwargs.get('StartingSequenceNumber') == \
             starting_sequence_number
-        assert call_kwargs['Timestamp'] == timestamp
+        assert call_kwargs.get('Timestamp') == timestamp
 
 
 @pytest.mark.asyncio
