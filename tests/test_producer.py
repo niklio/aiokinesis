@@ -113,14 +113,14 @@ async def test_producer_send_message_done_callback(mocker):
         'test1',
         loop,
     )
-    mocker.spy(producer, '_complete_produce_request')
+    producer._complete_produce_request = MagicMock()
 
     # Start producer
     await producer.start()
     # Send stuff
     await producer.send(1, {'key': 'value'})
     # Wait for the sender routine
-    await asyncio.sleep(0.1)
+    await asyncio.sleep(1)
 
     producer._complete_produce_request.assert_called_once()
     await producer.stop()

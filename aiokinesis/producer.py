@@ -55,7 +55,7 @@ class AIOKinesisProducer:
                 loop=self._loop
             )
             task.add_done_callback(
-                partial(self._complete_produce_request)
+                partial(self._complete_produce_request, task)
             )
             self._outstanding_tasks.add(task)
 
