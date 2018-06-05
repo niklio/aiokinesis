@@ -65,12 +65,17 @@ workflows:
           filters:
             branches:
               only:
-                - release-test
+                - release
 
-      - release:
+      - request-release:
+          type: approval
           requires:
             - lint
             - test
+
+      - release:
+          requires:
+            - request-release
           filters:
             branches:
               only:
