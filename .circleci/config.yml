@@ -72,6 +72,10 @@ workflows:
           requires:
             - lint
             - test
+          filters:
+            branches:
+              only:
+                - release
 
       - release:
           requires:
