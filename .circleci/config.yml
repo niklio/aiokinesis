@@ -29,25 +29,25 @@ jobs:
           name: Test
           command: pytest -x --tb=native
 
-    release_test:
-      docker:
-        - image: python:3.6.5-alpine3.7
-      working_directory: ~/asyncio
-      steps:
-        - checkout
-        - run:
-            name: Build
-            command: ./bin/release_test.sh
+  release_test:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: ./bin/release_test.sh
 
-    release:
-      docker:
-        - image: python:3.6.5-alpine3.7
-      working_directory: ~/asyncio
-      steps:
-        - checkout
-        - run:
-            name: Build
-            command: ./bin/release.sh
+  release:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: ./bin/release.sh
 
 workflows:
   version: 2
