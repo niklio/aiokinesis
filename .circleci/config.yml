@@ -65,7 +65,7 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - production
 
       - request-release:
           type: approval
@@ -75,7 +75,7 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - production
 
       - release:
           requires:
@@ -83,6 +83,6 @@ workflows:
           filters:
             branches:
               only:
-                - release
+                - production
 
 
