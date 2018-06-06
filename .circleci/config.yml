@@ -29,10 +29,60 @@ jobs:
           name: Test
           command: pytest -x --tb=native
 
+  release_test:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: ./bin/release_test.sh
+
+  release:
+    docker:
+      - image: python:3.6.5-alpine3.7
+    working_directory: ~/asyncio
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: ./bin/release.sh
+
 workflows:
   version: 2
-  lint_and_test:
+  release:
     jobs:
+
       - lint
+
       - test
+
+      - release_test:
+          requires:
+            - lint
+            - test
+          filters:
+            branches:
+              only:
+                - release
+
+      - request-release:
+          type: approval
+          requires:
+            - lint
+            - test
+          filters:
+            branches:
+              only:
+                - release
+
+      - release:
+          requires:
+            - request-release
+          filters:
+            branches:
+              only:
+                - release
+
 
